@@ -76,7 +76,7 @@ public class PersonController {
     }
 
 
-    @GetMapping("/secret/{id}")
+    @GetMapping("/authorize/{id}")
     public ResponseEntity<byte[]> getSecret(@PathVariable("id") Long id)
         throws InvalidAlgorithmParameterException, NoSuchAlgorithmException
     {
