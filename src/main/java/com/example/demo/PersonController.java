@@ -93,4 +93,24 @@ public class PersonController {
         ResponseEntity<byte[]> response = new ResponseEntity<>(Base64.getEncoder().encode(privateKey),headers,HttpStatus.OK);
         return response;
     }
+
+    @PostMapping("/token")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String getToken(@RequestBody String secret)
+            throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        String encodedPublic = personRepository.getPublicKey("amalia_popa");
+        String token = Utils.generateToken(secret,encodedPublic);
+        return token;
+    }
+
+    @GetMapping("/validate")
+    public String validateToken()
+            throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJhdXRoMCIsImV4cCI6MTYzODM5MjQ2MywiaWF0IjoxNjM4Mzg4ODYzfQ.KypqnowUvIsHravL5T507VeH3eAvG3QfC4GrYmxdF_-T1Ti07C96MzPlXL6LshIeXo65JpfSB0J7RXM9g7JuNQ";
+        String encodedPublic = personRepository.getPublicKey("amalia_popa");
+        return Utils.verifyToken(token, encodedPublic);
+    }
+
 }

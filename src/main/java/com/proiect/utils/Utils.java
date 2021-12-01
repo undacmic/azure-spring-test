@@ -1,15 +1,27 @@
 package com.proiect.utils;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.swing.*;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
+import java.security.spec.*;
+import java.time.LocalDate;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 
 
 public class Utils {
@@ -88,6 +100,64 @@ public class Utils {
         return keypair;
     }
 
+    public static String generateToken(String encodedSecret, String encodedPublic)
+            throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+       byte[] secret =  Base64.getDecoder().decode(encodedSecret);
+       byte[] publicString = Base64.getDecoder().decode(encodedPublic);
+
+
+       KeyFactory keyFactory = KeyFactory.getInstance("EC");
+
+       X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicString);
+       ECPublicKey publicKey = (ECPublicKey) keyFactory.generatePublic(publicKeySpec);
+
+       PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(secret);
+       ECPrivateKey privateKey = (ECPrivateKey) keyFactory.generatePrivate(privateKeySpec);
+
+        Algorithm algorithm = Algorithm.ECDSA256(publicKey,privateKey);
+        Date currentDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);
+        Date expirationDate = calendar.getTime();
+
+        String token = JWT.create()
+                .withIssuer("auth0")
+                .withIssuedAt(currentDate)
+                .withClaim("role","admin")
+                .withExpiresAt(expirationDate)
+                .sign(algorithm);
+
+        return token;
+
+    }
+
+    public static String verifyToken(String token, String encodedPublic)
+            throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        byte[] publicString = Base64.getDecoder().decode(encodedPublic);
+
+        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+
+        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicString);
+        ECPublicKey publicKey = (ECPublicKey) keyFactory.generatePublic(publicKeySpec);
+
+        try {
+            Algorithm algorithm = Algorithm.ECDSA256(publicKey, null);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer("auth0")
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
+            Map<String, Claim> claims = jwt.getClaims();
+
+            return claims.get("role").asString();
+        }
+        catch(JWTVerificationException exception) {
+            return "Unathorized";
+        }
+    }
 
 
 
