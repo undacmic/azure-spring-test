@@ -28,6 +28,9 @@ public class BookController {
     @GetMapping("/title/{title}")
     public Iterable<Book> getBooksByName(@PathVariable("title") String title) { return bookRepository.findByTitleLike(title); }
 
+    @GetMapping("/genre/{genre}")
+    public Iterable<Book> getBooksByGenre(@PathVariable("genre") String genre) { return bookRepository.findByGenre(genre); }
+
     @GetMapping("/author/{author}")
     public Iterable<Book> getBooksByAuthor(@PathVariable("author") String author) { return bookRepository.findByAuthorLike(author); }
 
