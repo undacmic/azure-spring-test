@@ -76,18 +76,15 @@ public class PersonController {
     }
 
 
-    @GetMapping(
-            value = "/secret/{username}"
-    )
-    public ResponseEntity<byte[]> getSecret(@PathVariable("username") String username)
+    @GetMapping("/secret/{id}")
+    public ResponseEntity<byte[]> getSecret(@PathVariable("id") Long id)
         throws InvalidAlgorithmParameterException, NoSuchAlgorithmException
     {
         KeyPair keyPair = Utils.generateKeyPair();
         byte[] publicKey = keyPair.getPublic().getEncoded();
         byte[] privateKey = keyPair.getPrivate().getEncoded();
 
-        int userId = personRepository.getUserIdentifier(username);
-        personRepository.setUserKey(Base64.getEncoder().encodeToString(publicKey),userId);
+        personRepository.setUserKey(Base64.getEncoder().encodeToString(publicKey),id);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
