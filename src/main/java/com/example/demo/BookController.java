@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,4 +30,18 @@ public class BookController {
 
     @GetMapping("/author/{author}")
     public Iterable<Book> getBooksByAuthor(@PathVariable("author") String author) { return bookRepository.findByAuthorLike(author); }
+
+    @GetMapping("/{field}/sort/{type}")
+    public Iterable<Book> getBooksByTitleSortedAsc(@PathVariable("field") String field, @PathVariable("type") int type)
+    {
+        switch (type) {
+            case 1:
+                return bookRepository.findAll(Sort.by(Sort.Direction.ASC, field));
+            case 2:
+                return bookRepository.findAll(Sort.by(Sort.Direction.DESC, field));
+            default:
+                return bookRepository.findAll();
+        }
+    }
+
 }
