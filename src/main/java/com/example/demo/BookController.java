@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v1/books")
 public class BookController {
 
     private final BookRepository bookRepository;
@@ -24,4 +24,9 @@ public class BookController {
         return bookRepository.findAll();
     }
 
+    @GetMapping("/title/{title}")
+    public Iterable<Book> getBooksByName(@PathVariable("title") String title) { return bookRepository.findByTitleLike(title); }
+
+    @GetMapping("/author/{author}")
+    public Iterable<Book> getBooksByAuthor(@PathVariable("author") String author) { return bookRepository.findByAuthorLike(author); }
 }
