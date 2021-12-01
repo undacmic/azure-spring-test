@@ -11,6 +11,7 @@ import com.proiect.utils.Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Path;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
@@ -76,17 +77,21 @@ public class PersonController {
 
 
     @GetMapping(
-            value = "/get-secret"
+            value = "/secret/{username}"
     )
-    public ResponseEntity<byte[]> getSecret()
+    public ResponseEntity<byte[]> getSecret(@PathVariable("username") String username)
         throws InvalidAlgorithmParameterException, NoSuchAlgorithmException
     {
         KeyPair keyPair = Utils.generateKeyPair();
         byte[] publicKey = keyPair.getPublic().getEncoded();
         byte[] privateKey = keyPair.getPrivate().getEncoded();
+
+        int userId = personRepository.getUserIdentifier(username);
+        personRepository.setUserKey(Base64.getEncoder().encodeToString(publicKey),userId);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
-        headers.setContentDispositionFormData("secret1.prv","secret1.prv");
+        headers.setContentDispositionFormData("secretKey.prv","secretKey.prv");
 
         ResponseEntity<byte[]> response = new ResponseEntity<>(Base64.getEncoder().encode(privateKey),headers,HttpStatus.OK);
         return response;
