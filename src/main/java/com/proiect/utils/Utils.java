@@ -1,11 +1,13 @@
 package com.proiect.utils;
 
+import com.auth0.jwt.algorithms.Algorithm;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
-import java.security.DrbgParameters;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.*;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
@@ -75,6 +77,17 @@ public class Utils {
 
 
     }
+
+    public static KeyPair generateKeyPair()
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException
+    {
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256r1");
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");
+        kpg.initialize(ecSpec, new SecureRandom());
+        KeyPair keypair = kpg.generateKeyPair();
+        return keypair;
+    }
+
 
 
 

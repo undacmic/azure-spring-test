@@ -1,12 +1,19 @@
 package com.example.demo;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.proiect.utils.Utils;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 
 
 @RestController
@@ -43,7 +50,7 @@ public class PersonController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public Person register(@RequestBody LoginForm registerForm)
-        throws InvalidKeySpecException, NoSuchAlgorithmException
+        throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException
     {
         String password = personRepository.findByUsername(registerForm.getUsername());
         if(password != null)
@@ -51,6 +58,8 @@ public class PersonController {
             return null;
             //return "I'm sorry, but the entered credentials are already taken!";
         }
+
+
 
         byte[] salt = Utils.getRandomBytes(64);
         String storePassword = Utils.getHash(registerForm.getPassword(),salt);
@@ -65,4 +74,21 @@ public class PersonController {
         //return "User created!\nPlease enter your personal details to validate your account creation request!";
     }
 
+
+    @GetMapping(
+            value = "/get-secret"
+    )
+    public ResponseEntity<byte[]> getSecret()
+        throws InvalidAlgorithmParameterException, NoSuchAlgorithmException
+    {
+        KeyPair keyPair = Utils.generateKeyPair();
+        byte[] publicKey = keyPair.getPublic().getEncoded();
+        byte[] privateKey = keyPair.getPrivate().getEncoded();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.setContentDispositionFormData("secret1.prv","secret1.prv");
+
+        ResponseEntity<byte[]> response = new ResponseEntity<>(Base64.getEncoder().encode(privateKey),headers,HttpStatus.OK);
+        return response;
+    }
 }
