@@ -34,6 +34,9 @@ public class BookController {
     @GetMapping("/author/{author}")
     public Iterable<Book> getBooksByAuthor(@PathVariable("author") String author) { return bookRepository.findByAuthorLike(author); }
 
+    @GetMapping("/isbn/{isbn}")
+    public Book getBookByISBN(@PathVariable("isbn") String isbn) { return bookRepository.findByISBN(isbn).get(0); }
+
     @GetMapping("/{field}/sort/{type}")
     public Iterable<Book> getBooksByTitleSortedAsc(@PathVariable("field") String field, @PathVariable("type") int type)
     {
@@ -46,5 +49,7 @@ public class BookController {
                 return bookRepository.findAll();
         }
     }
+
+
 
 }
