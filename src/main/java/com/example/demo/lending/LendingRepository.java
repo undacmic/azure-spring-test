@@ -1,6 +1,5 @@
-package com.proiect.repositories;
+package com.example.demo.lending;
 
-import com.proiect.entities.Lending;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LendingRepository extends JpaRepository<Lending, Long> {

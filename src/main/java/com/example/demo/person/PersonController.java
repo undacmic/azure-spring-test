@@ -1,11 +1,9 @@
-package com.proiect.controllers;
+package com.example.demo.person;
 
-import com.proiect.entities.Person;
-import com.proiect.entities.Role;
-import com.proiect.helpers.AuthorizeForm;
-import com.proiect.helpers.LoginForm;
-import com.proiect.helpers.Utils;
-import com.proiect.repositories.PersonRepository;
+import com.example.demo.role.Role;
+import com.example.demo.AuthorizeForm;
+import com.example.demo.LoginForm;
+import com.example.demo.Utils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

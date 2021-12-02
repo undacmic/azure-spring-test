@@ -1,7 +1,5 @@
-package com.proiect.controllers;
+package com.example.demo.lending;
 
-import com.proiect.entities.Lending;
-import com.proiect.repositories.LendingRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

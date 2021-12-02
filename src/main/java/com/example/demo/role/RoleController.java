@@ -1,7 +1,5 @@
-package com.proiect.controllers;
+package com.example.demo.role;
 
-import com.proiect.entities.Role;
-import com.proiect.repositories.RoleRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

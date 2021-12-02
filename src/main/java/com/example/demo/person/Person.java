@@ -1,5 +1,7 @@
-package com.proiect.entities;
+package com.example.demo.person;
 import com.fasterxml.jackson.annotation.*;
+import com.example.demo.lending.Lending;
+import com.example.demo.role.Role;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -26,14 +28,14 @@ public class Person {
         this.firstName="";
         this.lastName="";
     }
-    Person(String firstName,
-           String lastName,
-           LocalDate birthDate,
-           String personAddress,
-           String phoneNumber,
-           String email,
-           String username,
-           String personPassword) {
+    public Person(String firstName,
+                  String lastName,
+                  LocalDate birthDate,
+                  String personAddress,
+                  String phoneNumber,
+                  String email,
+                  String username,
+                  String personPassword) {
 
         this.firstName=firstName;
         this.lastName=lastName;

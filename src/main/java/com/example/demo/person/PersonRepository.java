@@ -1,6 +1,5 @@
-package com.proiect.repositories;
+package com.example.demo.person;
 
-import com.proiect.entities.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

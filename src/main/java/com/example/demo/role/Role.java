@@ -1,4 +1,4 @@
-package com.proiect.entities;
+package com.example.demo.role;
 
 
 import javax.persistence.*;
@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Entity
 public class Role {
 
-    Role() {}
+    public Role() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

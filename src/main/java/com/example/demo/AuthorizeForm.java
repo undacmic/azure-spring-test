@@ -1,4 +1,4 @@
-package com.proiect.helpers;
+package com.example.demo;
 
 public class AuthorizeForm {
 

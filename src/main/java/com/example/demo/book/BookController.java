@@ -1,7 +1,5 @@
-package com.proiect.controllers;
+package com.example.demo.book;
 
-import com.proiect.entities.Book;
-import com.proiect.repositories.BookRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

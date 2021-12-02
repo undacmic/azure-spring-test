@@ -1,6 +1,7 @@
-package com.proiect.entities;
+package com.example.demo.book;
 
 import com.fasterxml.jackson.annotation.*;
+import com.example.demo.lending.Lending;
 
 import javax.persistence.*;
 import java.util.HashSet;

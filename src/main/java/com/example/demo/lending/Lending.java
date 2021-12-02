@@ -1,5 +1,7 @@
-package com.proiect.entities;
+package com.example.demo.lending;
 
+import com.example.demo.book.Book;
+import com.example.demo.person.Person;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
