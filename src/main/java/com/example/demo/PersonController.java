@@ -49,30 +49,39 @@ public class PersonController {
     }
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Person register(@RequestBody LoginForm registerForm)
+    public ResponseEntity<byte[]> register(@RequestBody LoginForm loginForm)
         throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException
     {
-        String password = personRepository.findByUsername(registerForm.getUsername());
+        String password = personRepository.findByUsername(loginForm.getUsername());
         if(password != null)
         {
             return null;
             //return "I'm sorry, but the entered credentials are already taken!";
         }
 
-
-
         byte[] salt = Utils.getRandomBytes(64);
-        String storePassword = Utils.getHash(registerForm.getPassword(),salt);
+        String storePassword = Utils.getHash(loginForm.getPassword(),salt);
 
-        Person p = new Person(registerForm.getUsername(),storePassword);
+        Person p = new Person(loginForm.getFirstName(),loginForm.getLastName(),loginForm.getBirthDate(),loginForm.getPersonAddress(),loginForm.getPhoneNumber(),loginForm.getEmail(),loginForm.getUsername(),storePassword);
         Role role=new Role();
-        role.setID(1L);
+        role.setID(3L);
         p.setRole(role);
 
-        return personRepository.save(p);
+        Person newUser = personRepository.save(p);
 
-        //return "User created!\nPlease enter your personal details to validate your account creation request!";
+        KeyPair keyPair = Utils.generateKeyPair();
+        byte[] publicKey = keyPair.getPublic().getEncoded();
+        byte[] privateKey = keyPair.getPrivate().getEncoded();
+
+        personRepository.setUserKey(Base64.getEncoder().encodeToString(publicKey), newUser.getID());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.setContentDispositionFormData("secretKey.prv","secretKey.prv");
+
+        ResponseEntity<byte[]> response = new ResponseEntity<>(Base64.getEncoder().encode(privateKey),headers,HttpStatus.OK);
+        return response;
+
     }
 
 
@@ -104,13 +113,12 @@ public class PersonController {
         return token;
     }
 
-    @GetMapping("/validate")
-    public String validateToken()
+    @PostMapping("/validate")
+    public String validateToken(@RequestBody AuthorizeForm authorizeForm)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJhdXRoMCIsImV4cCI6MTYzODM5MjQ2MywiaWF0IjoxNjM4Mzg4ODYzfQ.KypqnowUvIsHravL5T507VeH3eAvG3QfC4GrYmxdF_-T1Ti07C96MzPlXL6LshIeXo65JpfSB0J7RXM9g7JuNQ";
-        String encodedPublic = personRepository.getPublicKey("amalia_popa");
-        return Utils.verifyToken(token, encodedPublic);
+        String encodedPublic = personRepository.getPublicKey(authorizeForm.getUsername());
+        return Utils.verifyToken(authorizeForm.getToken(), encodedPublic);
     }
 
 }
