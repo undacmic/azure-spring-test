@@ -3,21 +3,32 @@ package com.example.demo;
 public class AuthorizeForm {
 
     AuthorizeForm() {}
-    AuthorizeForm(String username,
-              String token) {
-        this.username=username;
+    AuthorizeForm(Long userId,
+                  String token,
+                  String encodedPublic) {
         this.token=token;
+        this.userId=userId;
+        this.encodedPublic=encodedPublic;
     }
 
-    private String username;
+    private Long userId;
     private String token;
+    private String encodedPublic;
 
-    public String getUsername() {
-        return username;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getEncodedPublic() {
+        return encodedPublic;
+    }
+
+    public void setEncodedPublic(String encodedPublic) {
+        this.encodedPublic = encodedPublic;
     }
 
     public String getToken() {

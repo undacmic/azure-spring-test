@@ -14,8 +14,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("SELECT p.ID FROM Person p WHERE p.username = :username")
     int getUserIdentifier(String username);
 
-    @Query("SELECT p.publicKey FROM Person p WHERE p.username = :username")
-    String getPublicKey(String username);
+    @Query("SELECT p.publicKey FROM Person p WHERE p.ID=:userId")
+    String getPublicKey(Long userId);
 
     @Modifying
     @Query("UPDATE Person p SET p.publicKey=:encodedString WHERE p.ID=:userId")

@@ -85,40 +85,34 @@ public class PersonController {
     }
 
 
-    @GetMapping("/authorize/{id}")
-    public ResponseEntity<byte[]> getSecret(@PathVariable("id") Long id)
-        throws InvalidAlgorithmParameterException, NoSuchAlgorithmException
-    {
-        KeyPair keyPair = Utils.generateKeyPair();
-        byte[] publicKey = keyPair.getPublic().getEncoded();
-        byte[] privateKey = keyPair.getPrivate().getEncoded();
-
-        personRepository.setUserKey(Base64.getEncoder().encodeToString(publicKey),id);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        headers.setContentDispositionFormData("secretKey.prv","secretKey.prv");
-
-        ResponseEntity<byte[]> response = new ResponseEntity<>(Base64.getEncoder().encode(privateKey),headers,HttpStatus.OK);
-        return response;
-    }
-
-    @PostMapping("/token")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String getToken(@RequestBody String secret)
+    @DeleteMapping("/delete/{id}")
+    public void deleteUser(@RequestBody AuthorizeForm authorizeForm, @PathVariable("id") Long id)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        String encodedPublic = personRepository.getPublicKey("amalia_popa");
-        String token = Utils.generateToken(secret,encodedPublic);
-        return token;
+        authorizeForm.setEncodedPublic(personRepository.getPublicKey(authorizeForm.getUserId()));
+        String role = Utils.verifyToken(authorizeForm);
+        if(role.equals("admin") || role.equals("librarian"))
+        {
+            personRepository.deleteById(id);
+        }
     }
+
+//    @PostMapping("/token")
+  //  @ResponseStatus(HttpStatus.CREATED)
+    //public String getToken(@RequestBody String secret)
+           // throws NoSuchAlgorithmException, InvalidKeySpecException
+    //{
+        //String encodedPublic = personRepository.getPublicKey("un_dragos");
+        //String token = Utils.generateToken(secret,encodedPublic);
+        //return token;
+   // }
 
     @PostMapping("/validate")
     public String validateToken(@RequestBody AuthorizeForm authorizeForm)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        String encodedPublic = personRepository.getPublicKey(authorizeForm.getUsername());
-        return Utils.verifyToken(authorizeForm.getToken(), encodedPublic);
+        authorizeForm.setEncodedPublic(personRepository.getPublicKey(authorizeForm.getUserId()));
+        return Utils.verifyToken(authorizeForm);
     }
 
 }

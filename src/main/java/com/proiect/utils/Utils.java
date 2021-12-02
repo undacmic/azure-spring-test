@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.demo.AuthorizeForm;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -134,10 +135,11 @@ public class Utils {
 
     }
 
-    public static String verifyToken(String token, String encodedPublic)
+    public static String verifyToken(AuthorizeForm authorizeForm)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        byte[] publicString = Base64.getDecoder().decode(encodedPublic);
+
+        byte[] publicString = Base64.getDecoder().decode(authorizeForm.getEncodedPublic());
 
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
 
@@ -149,7 +151,7 @@ public class Utils {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("auth0")
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
+            DecodedJWT jwt = verifier.verify(authorizeForm.getToken());
             Map<String, Claim> claims = jwt.getClaims();
 
             return claims.get("role").asString();
@@ -158,6 +160,8 @@ public class Utils {
             return "Unathorized";
         }
     }
+
+
 
 
 
