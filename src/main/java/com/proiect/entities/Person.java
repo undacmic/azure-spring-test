@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.proiect.entities;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;

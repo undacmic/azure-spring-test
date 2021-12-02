@@ -1,17 +1,18 @@
-package com.example.demo;
+package com.proiect.controllers;
 
+import com.proiect.entities.Person;
+import com.proiect.entities.Role;
+import com.proiect.helpers.AuthorizeForm;
+import com.proiect.helpers.LoginForm;
+import com.proiect.helpers.Utils;
+import com.proiect.repositories.PersonRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.proiect.utils.Utils;
 
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.nio.file.Path;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
