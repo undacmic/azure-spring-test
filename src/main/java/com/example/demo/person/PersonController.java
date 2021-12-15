@@ -1,11 +1,9 @@
 package com.example.demo.person;
 
-import com.example.demo.Request;
+import com.example.demo.*;
 import com.example.demo.role.Role;
-import com.example.demo.AuthorizeForm;
-import com.example.demo.LoginForm;
-import com.example.demo.Utils;
 import com.google.gson.*;
+import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,21 +37,24 @@ public class PersonController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public String login(@RequestBody LoginForm loginForm)
-        throws InvalidKeySpecException, NoSuchAlgorithmException
+    public ResponseEntity<Object> login(@RequestBody LoginForm loginForm)
+        throws InvalidKeySpecException, NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException, InvalidKeyException, SignatureException
     {
 
         String password = personRepository.findByUsername(loginForm.getUsername());
         if(password == null) {
-            return "I'm sorry, but the entered credentials are invalid!";
+            return  ResponseHandler.buildTokenResponse(null,null,null,HttpStatus.FORBIDDEN);
         }
+
 
         if(Utils.verifyHash(loginForm.getPassword(),password))
         {
-            return "OK";
+            Person requestedUser = personRepository.getByCredentials(loginForm.getUsername());
+            return  SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
+
         }
         else {
-            return "I'm sorry, but the entered credentials are invalid!";
+            return  ResponseHandler.buildTokenResponse(null,null,null,HttpStatus.FORBIDDEN);
         }
     }
 
@@ -113,60 +114,49 @@ public class PersonController {
 
 
     @DeleteMapping("/delete/{id}")
-    public void deleteUser(@RequestBody AuthorizeForm authorizeForm, @PathVariable("id") Long id)
+    public void deleteUser(@PathVariable("id") Long id) //@RequestBody AuthorizeForm authorizeForm - authorization parameter
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        authorizeForm.setEncodedPublic(personRepository.getPublicKey(authorizeForm.getUserId()));
-        String role = Utils.verifyToken(authorizeForm);
-        if(role.equals("admin") || role.equals("librarian"))
-        {
-            personRepository.deleteById(id);
-        }
+        // authorizeForm.setEncodedPublic(personRepository.getPublicKey(authorizeForm.getUserId()));
+        // String role = Utils.verifyToken(authorizeForm);
+        //if(role.equals("admin") || role.equals("librarian"))
+        //{
+        personRepository.deleteById(id);
+        //}
     }
 
     @PutMapping("/update/{id}")
-    public void updateUser(@RequestBody Request request, @PathVariable("id") Long id)
+    public void updateUser(Person personForm, @PathVariable("id") Long id) //Request param for authorization
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        request.getAuthorizeForm().setEncodedPublic(personRepository.getPublicKey(request.getAuthorizeForm().getUserId()));
-        String role = Utils.verifyToken(request.getAuthorizeForm());
-        if(role.equals("admin") || role.equals("librarian")) {
+        //request.getAuthorizeForm().setEncodedPublic(personRepository.getPublicKey(request.getAuthorizeForm().getUserId()));
+        //String role = Utils.verifyToken(request.getAuthorizeForm());
+        //if(role.equals("admin") || role.equals("librarian")) {
 
-            Person user = personRepository.getById(id);
+        Person user = personRepository.getById(id);
 
-            Person person = gson.fromJson(request.getJsonObject(), Person.class);
+        //Person person = gson.fromJson(request.getJsonObject(), Person.class);
 
 
-            user.setFirstName(person.getFirstName());
-            user.setLastName(person.getLastName());
-            user.setBirthDate(person.getBirthDate());
-            user.setPersonAddress(person.getPersonAddress());
-            user.setPhoneNumber(person.getPhoneNumber());
-            user.setEmail(person.getEmail());
-            user.setPersonPassword(person.getPersonPassword());
+        user.setFirstName(personForm.getFirstName());
+        user.setLastName(personForm.getLastName());
+        user.setBirthDate(personForm.getBirthDate());
+        user.setPersonAddress(personForm.getPersonAddress());
+        user.setPhoneNumber(personForm.getPhoneNumber());
+        user.setEmail(personForm.getEmail());
+        user.setPersonPassword(personForm.getPersonPassword());
 
-            personRepository.save(user);
+        personRepository.save(user);
 
-        }
+        //}
 
     }
 
-    @PostMapping("/token")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String getToken(@RequestBody AuthorizeForm authorizeForm)
-           throws NoSuchAlgorithmException, InvalidKeySpecException
-    {
-        String encodedPublic = personRepository.getPublicKey(authorizeForm.getUserId());
-        String token = Utils.generateToken(authorizeForm.getToken(),encodedPublic);
-        return token;
-   }
-
     @PostMapping("/validate")
-    public String validateToken(@RequestBody AuthorizeForm authorizeForm)
-            throws NoSuchAlgorithmException, InvalidKeySpecException
+    public ResponseEntity<Object> validateToken(@RequestBody AuthorizeForm authorizeForm)
+            throws Exception
     {
-        authorizeForm.setEncodedPublic(personRepository.getPublicKey(authorizeForm.getUserId()));
-        return Utils.verifyToken(authorizeForm);
+        return SecurityHandler.verifyToken(authorizeForm);
     }
 
 }

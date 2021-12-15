@@ -8,6 +8,10 @@ import javax.transaction.Transactional;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
+
+    @Query("SELECT p FROM Person p WHERE p.username=:username")
+    Person getByCredentials(String username);
+
     @Query("SELECT p.personPassword FROM Person p WHERE p.username = ?1")
     String findByUsername(String username);
 

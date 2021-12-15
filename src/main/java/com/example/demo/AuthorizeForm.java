@@ -3,24 +3,36 @@ package com.example.demo;
 public class AuthorizeForm {
 
     AuthorizeForm() {}
-    AuthorizeForm(Long userId,
+    AuthorizeForm(String signature,
                   String token,
-                  String encodedPublic) {
+                  String encodedPublic,
+                  String algorithm) {
         this.token=token;
-        this.userId=userId;
+        this.signature = signature;
         this.encodedPublic=encodedPublic;
+        this.algorithm = algorithm;
     }
 
-    private Long userId;
     private String token;
     private String encodedPublic;
+    private String signature;
+    private String algorithm;
 
-    public Long getUserId() {
-        return userId;
+
+    public String getAlgorithm() {
+        return algorithm;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public String getEncodedPublic() {
