@@ -16,9 +16,9 @@ public class DemoApplication {
 		throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException, UnrecoverableKeyException
 	{
 
-		RequestHandler.makeLoginRequest();
 		SecurityHandler sh = new SecurityHandler();
 		SpringApplication.run(DemoApplication.class, args);
+		RequestHandler.makeLoginRequest();
 
 	}
 
