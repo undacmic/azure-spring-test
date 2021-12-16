@@ -18,7 +18,6 @@ public class DemoApplication {
 
 		SecurityHandler sh = new SecurityHandler();
 		SpringApplication.run(DemoApplication.class, args);
-		RequestHandler.makeLoginRequest();
 
 	}
 
