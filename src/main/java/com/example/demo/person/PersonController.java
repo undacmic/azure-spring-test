@@ -35,31 +35,28 @@ public class PersonController {
     public Iterable<Person> getUsers() { return personRepository.findAll(); }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginForm loginForm)
+    public ResponseEntity<Object> login(@RequestBody LoginForm loginForm)
     {
 
         try {
             String password = personRepository.findByUsername(loginForm.getUsername());
             if (password == null) {
-                return "Nu e buna parola";
-                //return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
+                return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
             }
 
 
             if (Utils.verifyHash(loginForm.getPassword(), password)) {
                 SecurityHandler sc = new SecurityHandler();
                 Person requestedUser = personRepository.getByCredentials(loginForm.getUsername());
-                return "NICE";
-                //return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
+                return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
 
             } else {
-                return "Nu e buna parola";
-                //return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
+                return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
             }
         }
         catch(Exception e) {
-            return "Nu e buna parola";
-            //return ResponseHandler.buildTokenResponse(e.getMessage(), null, null, HttpStatus.FORBIDDEN);
+            //return "Nu e buna parola";
+            return ResponseHandler.buildTokenResponse(e.getMessage(), null, null, HttpStatus.FORBIDDEN);
 
         }
     }
