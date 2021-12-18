@@ -62,7 +62,7 @@ public class PersonController {
         }
     }
 
-    }
+
 
     @PostMapping("/register")
     public ResponseEntity<byte[]> register(@RequestBody LoginForm loginForm)
