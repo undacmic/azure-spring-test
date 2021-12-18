@@ -38,25 +38,30 @@ public class PersonController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> login(@RequestBody LoginForm loginForm)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException, InvalidKeyException, SignatureException
     {
 
-        String password = personRepository.findByUsername(loginForm.getUsername());
-        if(password == null) {
-            return  ResponseHandler.buildTokenResponse(null,null,null,HttpStatus.FORBIDDEN);
-        }
+        try {
+            String password = personRepository.findByUsername(loginForm.getUsername());
+            if (password == null) {
+                return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
+            }
 
 
-        if(Utils.verifyHash(loginForm.getPassword(),password))
-        {
-            SecurityHandler sc = new SecurityHandler();
-            Person requestedUser = personRepository.getByCredentials(loginForm.getUsername());
-            return  SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
+            if (Utils.verifyHash(loginForm.getPassword(), password)) {
+                SecurityHandler sc = new SecurityHandler();
+                Person requestedUser = personRepository.getByCredentials(loginForm.getUsername());
+                return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
+
+            } else {
+                return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
+            }
+        }
+        catch(Exception e) {
+            return ResponseHandler.buildTokenResponse(e.getMessage(), null, null, HttpStatus.FORBIDDEN);
 
         }
-        else {
-            return  ResponseHandler.buildTokenResponse(null,null,null,HttpStatus.FORBIDDEN);
-        }
+    }
+
     }
 
     @PostMapping("/register")
