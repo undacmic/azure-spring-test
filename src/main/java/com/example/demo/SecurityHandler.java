@@ -35,8 +35,7 @@ public class SecurityHandler {
                 throws Exception
     {
 
-
-        KeyStore certificateStore = KeyStore.getInstance("PKCS12");
+        KeyStore certificateStore = KeyStore.getInstance("PKCS12","SunJCE");
         char[] pwdArray = "EchipaDeSoc74".toCharArray();
         FileInputStream fis = new FileInputStream("C:\\home\\site\\wwwroot\\springboot.p12");
         certificateStore.load(fis, pwdArray);
