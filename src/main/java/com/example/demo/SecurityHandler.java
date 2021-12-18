@@ -27,7 +27,7 @@ import java.util.*;
 
 public class SecurityHandler {
 
-    SecurityHandler()
+    public SecurityHandler()
     {
         try {
             if (certificateStore == null) {
@@ -67,6 +67,7 @@ public class SecurityHandler {
     public static ResponseEntity<Object> signInformation(String role, Long id)
             throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, InvalidKeyException, SignatureException
     {
+
 
 
         ECPrivateKey ecSigningKey = (ECPrivateKey) certificateStore.getKey("springboot",pwdArray);
