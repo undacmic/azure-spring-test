@@ -3,7 +3,6 @@ package com.example.demo.person;
 import com.example.demo.*;
 import com.example.demo.role.Role;
 import com.google.gson.*;
-import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,7 +35,6 @@ public class PersonController {
     public Iterable<Person> getUsers() { return personRepository.findAll(); }
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> login(@RequestBody LoginForm loginForm)
     {
 
@@ -65,7 +63,7 @@ public class PersonController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<byte[]> register(@RequestBody LoginForm loginForm)
+    public ResponseEntity<byte[]> register(@RequestBody RegisterForm loginForm)
             throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException
     {
         String password = personRepository.findByUsername(loginForm.getUsername());
