@@ -33,7 +33,7 @@ public class SecurityHandler {
         if (certificateStore == null) {
             certificateStore = KeyStore.getInstance("PKCS12");
             char[] pwdArray = "EchipaDeSoc74".toCharArray();
-            FileInputStream fis = new FileInputStream("src/main/java/com/example/demo/springboot.p12");
+            FileInputStream fis = new FileInputStream("C:\\home\\src\\main\\java\\com\\example\\demo\\springboot.p12");
             certificateStore.load(fis, pwdArray);
         }
     }
