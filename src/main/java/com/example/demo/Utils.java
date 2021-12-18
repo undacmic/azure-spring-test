@@ -6,10 +6,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.http.ResponseEntity;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
@@ -96,65 +98,36 @@ public class Utils {
         return keypair;
     }
 
-    public static String generateToken(String encodedSecret, String encodedPublic)
-            throws NoSuchAlgorithmException, InvalidKeySpecException
-    {
-       byte[] secret =  Base64.getDecoder().decode(encodedSecret);
-       byte[] publicString = Base64.getDecoder().decode(encodedPublic);
 
+    public static boolean verifyServerIdentity() {
 
-       KeyFactory keyFactory = KeyFactory.getInstance("EC");
-
-       X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicString);
-       ECPublicKey publicKey = (ECPublicKey) keyFactory.generatePublic(publicKeySpec);
-
-       PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(secret);
-       ECPrivateKey privateKey = (ECPrivateKey) keyFactory.generatePrivate(privateKeySpec);
-
-        Algorithm algorithm = Algorithm.ECDSA256(publicKey,privateKey);
-        Date currentDate = new Date();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.HOUR_OF_DAY, 1);
-        Date expirationDate = calendar.getTime();
-
-        String token = JWT.create()
-                .withIssuer("auth0")
-                .withIssuedAt(currentDate)
-                .withClaim("role","admin")
-                .withExpiresAt(expirationDate)
-                .sign(algorithm);
-
-        return token;
-
+        return false;
     }
 
-    public static String verifyToken(AuthorizeForm authorizeForm)
-            throws NoSuchAlgorithmException, InvalidKeySpecException
+    public static AuthorizeForm signRequestForm(ResponseEntity<Object> tokenResponse, String encodedPrivate)
+            throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException
     {
 
-        byte[] publicString = Base64.getDecoder().decode(authorizeForm.getEncodedPublic());
+        Map<String, Object> responseBody = (Map<String, Object>) tokenResponse.getBody();
+        String token = (String) responseBody.get("token");
+        Long userId = (Long) responseBody.get("userId");
 
+        byte[] privateString = Base64.getDecoder().decode(encodedPrivate);
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
 
-        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicString);
-        ECPublicKey publicKey = (ECPublicKey) keyFactory.generatePublic(publicKeySpec);
+        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateString);
+        Signature ecdsaSign = Signature.getInstance("SHA384withECDSA");
+        ECPrivateKey privateKey = (ECPrivateKey) keyFactory.generatePrivate(privateKeySpec);
+        ecdsaSign.initSign(privateKey);
+        ecdsaSign.update(token.getBytes(StandardCharsets.UTF_8));
+        byte[] signature = ecdsaSign.sign();
 
-        try {
-            Algorithm algorithm = Algorithm.ECDSA256(publicKey, null);
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("auth0")
-                    .build();
-            DecodedJWT jwt = verifier.verify(authorizeForm.getToken());
-            Map<String, Claim> claims = jwt.getClaims();
+        String encodedSignature = Base64.getEncoder().encodeToString(signature);
 
-            return claims.get("role").asString();
-        }
-        catch(JWTVerificationException exception) {
-            return "Unathorized";
-        }
+        AuthorizeForm authorizeForm = new AuthorizeForm(encodedSignature, token, null, "SHA384withECDSA");
+        return authorizeForm;
     }
+
 
 
 
