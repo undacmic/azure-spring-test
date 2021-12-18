@@ -48,8 +48,8 @@ public class PersonController {
             if (Utils.verifyHash(loginForm.getPassword(), password)) {
                 SecurityHandler sc = new SecurityHandler();
                 Person requestedUser = personRepository.getByCredentials(loginForm.getUsername());
-                return ResponseHandler.buildTokenResponse("e ok pana aici", null, null, HttpStatus.FORBIDDEN);
-                //return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
+                //return ResponseHandler.buildTokenResponse("e ok pana aici", null, null, HttpStatus.FORBIDDEN);
+                return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
 
             } else {
                 return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);

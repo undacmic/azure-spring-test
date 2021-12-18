@@ -27,23 +27,19 @@ import java.util.*;
 
 public class SecurityHandler {
 
-    public SecurityHandler()
-            throws Exception
-    {
-        if (certificateStore == null) {
-            certificateStore = KeyStore.getInstance("PKCS12");
-            char[] pwdArray = "EchipaDeSoc74".toCharArray();
-            FileInputStream fis = new FileInputStream("C:\\home\\src\\main\\java\\com\\example\\demo\\springboot.p12");
-            certificateStore.load(fis, pwdArray);
-        }
+    public SecurityHandler(){
+
     }
 
-
     public static ResponseEntity<Object> signInformation(String role, Long id)
-            throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, InvalidKeyException, SignatureException
+                throws Exception
     {
 
 
+        KeyStore certificateStore = KeyStore.getInstance("pkcs12");
+        char[] pwdArray = "EchipaDeSoc74".toCharArray();
+        FileInputStream fis = new FileInputStream("C:\\home\\src\\main\\java\\com\\example\\demo\\springboot.p12");
+        certificateStore.load(fis, pwdArray);
 
         ECPrivateKey ecSigningKey = (ECPrivateKey) certificateStore.getKey("springboot",pwdArray);
         ECPublicKey ecPublicKey = (ECPublicKey) certificateStore.getCertificate("springboot").getPublicKey();
@@ -70,9 +66,13 @@ public class SecurityHandler {
     }
 
     public static ResponseEntity<Object> verifyToken(AuthorizeForm authorizeForm)
-            throws NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException, InvalidKeyException, UnsupportedEncodingException, SignatureException
+            throws Exception
     {
 
+        KeyStore certificateStore = KeyStore.getInstance("pkcs12");
+        char[] pwdArray = "EchipaDeSoc74".toCharArray();
+        FileInputStream fis = new FileInputStream("C:\\home\\src\\main\\java\\com\\example\\demo\\springboot.p12");
+        certificateStore.load(fis, pwdArray);
 
         ECPublicKey serverPublicKey = (ECPublicKey) certificateStore.getCertificate("springboot").getPublicKey();
 
@@ -112,10 +112,6 @@ public class SecurityHandler {
         }
     }
 
-
-
-    private static KeyStore certificateStore = null;
-    private static final char[] pwdArray="EchipaDeSoc74".toCharArray();
     private static PersonRepository personRepository;
 
 
