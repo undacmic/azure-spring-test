@@ -28,38 +28,13 @@ import java.util.*;
 public class SecurityHandler {
 
     public SecurityHandler()
+            throws Exception
     {
-        try {
-            if (certificateStore == null) {
-                certificateStore = KeyStore.getInstance("PKCS12");
-                char[] pwdArray = "EchipaDeSoc74".toCharArray();
-                FileInputStream fis = new FileInputStream("src/main/java/com/example/demo/springboot.p12");
-                certificateStore.load(fis, pwdArray);
-            }
-        }
-        catch(IOException e)
-        {
-            System.out.print("Fisierul nu exista sau calea acestuia a fost modificata!\n");
-            System.out.print(e.toString());
-            System.exit(-10);
-        }
-        catch(KeyStoreException e)
-        {
-            System.out.print("Instantierea keystore-ului nu s-a putut finaliza cu succes.\n");
-            System.out.print(e.toString());
-            System.exit(-11);
-        }
-        catch(NoSuchAlgorithmException e)
-        {
-            System.out.print("Algoritmul folosit nu exista si a produs o exceptie!\n");
-            System.out.print(e.toString());
-            System.exit(-12);
-        }
-        catch(CertificateException e)
-        {
-            System.out.print("Certificatul cu alias-ul cautat nu exista sau parola folosita la accesare este incorecta!\n");
-            System.out.print(e.toString());
-            System.exit(-13);
+        if (certificateStore == null) {
+            certificateStore = KeyStore.getInstance("PKCS12");
+            char[] pwdArray = "EchipaDeSoc74".toCharArray();
+            FileInputStream fis = new FileInputStream("src/main/java/com/example/demo/springboot.p12");
+            certificateStore.load(fis, pwdArray);
         }
     }
 

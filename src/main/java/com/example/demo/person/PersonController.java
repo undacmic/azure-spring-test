@@ -47,7 +47,7 @@ public class PersonController {
 
 
             if (Utils.verifyHash(loginForm.getPassword(), password)) {
-                //SecurityHandler sc = new SecurityHandler();
+                SecurityHandler sc = new SecurityHandler();
                 Person requestedUser = personRepository.getByCredentials(loginForm.getUsername());
                 return "NICE";
                 //return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
