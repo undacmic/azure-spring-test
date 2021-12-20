@@ -41,7 +41,7 @@ public class PersonController {
         try {
             String password = personRepository.findByUsername(loginForm.getUsername());
             if (password == null) {
-                return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
+                return ResponseHandler.buildTokenResponse("Utlizatorul nu a fost gasit!", null, null, HttpStatus.FORBIDDEN);
             }
 
 
@@ -52,7 +52,7 @@ public class PersonController {
                 return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
 
             } else {
-                return ResponseHandler.buildTokenResponse(null, null, null, HttpStatus.FORBIDDEN);
+                return ResponseHandler.buildTokenResponse("Verificarea hash-ului nu s-a putut realiza!", null, null, HttpStatus.FORBIDDEN);
             }
         }
         catch(Exception e) {
