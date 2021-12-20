@@ -36,12 +36,10 @@ public class SecurityHandler {
                 throws Exception
     {
 
-        KeyStore certificateStore = KeyStore.getInstance("Windows-MY");
-        certificateStore.load(null,null);
-        Certificate cert = certificateStore.getCertificate("springrest");
-        //FileInputStream fis = new FileInputStream("C:\\home\\site\\wwwroot\\springboot.p12");
-        //certificateStore.load(fis, pwdArray);
-        PrivateKey privKey = (PrivateKey) certificateStore.getKey("springrest", ("EchipaDeSoc74").toCharArray());
+        KeyStore ks = KeyStore.getInstance("Windows-MY");
+        ks.load(null, null);
+        Certificate cert = ks.getCertificate("springrest");
+        PrivateKey privKey = (PrivateKey) ks.getKey("springrest", ("EchipaDeSoc74").toCharArray());
 
 
 //        ECPrivateKey ecSigningKey = (ECPrivateKey) certificateStore.getKey("springboot",pwdArray);
