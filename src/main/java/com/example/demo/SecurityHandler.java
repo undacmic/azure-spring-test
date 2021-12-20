@@ -41,7 +41,7 @@ public class SecurityHandler {
         Certificate cert = certificateStore.getCertificate("springrest");
         //FileInputStream fis = new FileInputStream("C:\\home\\site\\wwwroot\\springboot.p12");
         //certificateStore.load(fis, pwdArray);
-        ECPrivateKey privKey = (ECPrivateKey) certificateStore.getKey("springrest", ("EchipaDeSoc74").toCharArray());
+        PrivateKey privKey = (PrivateKey) certificateStore.getKey("springrest", ("EchipaDeSoc74").toCharArray());
 
 
 //        ECPrivateKey ecSigningKey = (ECPrivateKey) certificateStore.getKey("springboot",pwdArray);
