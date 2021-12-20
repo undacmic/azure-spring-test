@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.interfaces.ECPrivateKey;
 
@@ -35,10 +36,13 @@ public class SecurityHandler {
                 throws Exception
     {
 
-        KeyStore certificateStore = KeyStore.getInstance("pkcs12","SunJCE");
-        char[] pwdArray = "EchipaDeSoc74".toCharArray();
-        FileInputStream fis = new FileInputStream("C:\\home\\site\\wwwroot\\springboot.p12");
-        certificateStore.load(fis, pwdArray);
+        KeyStore certificateStore = KeyStore.getInstance("Windows-MY");
+        certificateStore.load(null,null);
+        Certificate cert = certificateStore.getCertificate("springrest");
+        //FileInputStream fis = new FileInputStream("C:\\home\\site\\wwwroot\\springboot.p12");
+        //certificateStore.load(fis, pwdArray);
+        ECPrivateKey privKey = (ECPrivateKey) certificateStore.getKey("springrest", ("EchipaDeSoc74").toCharArray());
+
 
 //        ECPrivateKey ecSigningKey = (ECPrivateKey) certificateStore.getKey("springboot",pwdArray);
 //        ECPublicKey ecPublicKey = (ECPublicKey) certificateStore.getCertificate("springboot").getPublicKey();
@@ -61,7 +65,7 @@ public class SecurityHandler {
 
 
         //return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(ecPublicKey.getEncoded()), token,id, HttpStatus.OK);
-        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString("ecPublicKey".getBytes(StandardCharsets.UTF_8)), "token",id, HttpStatus.OK);
+        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(privKey.getEncoded()), "token",id, HttpStatus.OK);
 
     }
 

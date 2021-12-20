@@ -36,3 +36,8 @@ build/
 .mvn/
 mvnw
 mvnw.cmd
+/src/main/java/com/example/demo/springboot.p12
+/src/main/java/com/example/demo/springrest.pfx
+/src/main/java/com/example/demo/public-key.pem
+/src/main/java/com/example/demo/private-key.pem
+/src/main/java/com/example/demo/cert.pem
