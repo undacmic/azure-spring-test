@@ -63,7 +63,6 @@ public class SecurityHandler {
 
 
         return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(ecPublicKey.getEncoded()), token,id, HttpStatus.OK);
-        //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
 
@@ -71,16 +70,14 @@ public class SecurityHandler {
             throws Exception
     {
 
-        KeyStore certificateStore = KeyStore.getInstance("pkcs12");
-        char[] pwdArray = "EchipaDeSoc74".toCharArray();
-        FileInputStream fis = new FileInputStream("C:\\home\\site\\wwwroot\\springboot.p12");
-        certificateStore.load(fis, pwdArray);
+        KeyStore ks = KeyStore.getInstance("PKCS12");
+        ks.load(new FileInputStream("C:\\home\\site\\wwwroot\\springrest.pfx"), ("EchipaDeSoc74").toCharArray());
 
-        ECPublicKey serverPublicKey = (ECPublicKey) certificateStore.getCertificate("springboot").getPublicKey();
+        ECPublicKey serverPublicKey = (ECPublicKey) ks.getCertificate("springrest").getPublicKey();
 
 
         try {
-            Algorithm algorithm = Algorithm.ECDSA256(serverPublicKey, null);
+            Algorithm algorithm = Algorithm.ECDSA384(serverPublicKey, null);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("alphav0.1-rest")
                     .build();

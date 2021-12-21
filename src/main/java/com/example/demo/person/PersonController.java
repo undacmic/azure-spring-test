@@ -41,62 +41,62 @@ public class PersonController {
         try {
             String password = personRepository.findByUsername(loginForm.getUsername());
             if (password == null) {
-                return ResponseHandler.buildTokenResponse("Utlizatorul nu a fost gasit!", null, null, HttpStatus.FORBIDDEN);
+                return ResponseHandler.buildErrorResponse("CREDENTIALS_ERROR","Contul cu numele de utlizator cautat nu exista sau a fost sters!",HttpStatus.NOT_FOUND);
             }
 
 
             if (Utils.verifyHash(loginForm.getPassword(), password)) {
                 SecurityHandler sc = new SecurityHandler();
                 Person requestedUser = personRepository.getByCredentials(loginForm.getUsername());
-                //return ResponseHandler.buildTokenResponse("e ok pana aici", null, null, HttpStatus.FORBIDDEN);
                 return SecurityHandler.signInformation(requestedUser.getRole().getRoleName(), requestedUser.getID());
 
             } else {
-                return ResponseHandler.buildTokenResponse("Verificarea hash-ului nu s-a putut realiza!", null, null, HttpStatus.FORBIDDEN);
+                return ResponseHandler.buildErrorResponse("VERIFICATION_ERROR","Verificarea asupra integritatii parolei nu s-a putut realiza cu succes!",HttpStatus.UNAUTHORIZED);
             }
         }
         catch(Exception e) {
-            //return "Nu e buna parola";
-            return ResponseHandler.buildTokenResponse(e.getMessage(), null, null, HttpStatus.FORBIDDEN);
-
+            return ResponseHandler.buildErrorResponse(e.getMessage(),"A aparut o exceptie in timpul procesului de autentificare pe serviciul remote!",HttpStatus.UNAUTHORIZED);
         }
     }
 
 
 
     @PostMapping("/register")
-    public ResponseEntity<byte[]> register(@RequestBody RegisterForm loginForm)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException
+    public ResponseEntity<Object> register(@RequestBody RegisterForm loginForm)
     {
-        String password = personRepository.findByUsername(loginForm.getUsername());
-        if(password != null)
-        {
-            return null;
-            //return "I'm sorry, but the entered credentials are already taken!";
+        try {
+            String password = personRepository.findByUsername(loginForm.getUsername());
+            if (password != null) {
+                return ResponseHandler.buildErrorResponse("CREDENTIALS_ERROR", "Contul cu numele de utlizator introdus este deja existent in baza de date a utilizatorilor!", HttpStatus.FOUND);
+            }
+
+            byte[] salt = Utils.getRandomBytes(64);
+            String storePassword = Utils.getHash(loginForm.getPassword(), salt);
+
+            Person p = new Person(loginForm.getFirstName(), loginForm.getLastName(), loginForm.getBirthDate(), loginForm.getPersonAddress(), loginForm.getPhoneNumber(), loginForm.getEmail(), loginForm.getUsername(), storePassword);
+            Role role = new Role();
+            role.setID(3L);
+            p.setRole(role);
+
+            Person newUser = personRepository.save(p);
+
+            KeyPair keyPair = Utils.generateKeyPair();
+            byte[] publicKey = keyPair.getPublic().getEncoded();
+            byte[] privateKey = keyPair.getPrivate().getEncoded();
+
+            personRepository.setUserKey(Base64.getEncoder().encodeToString(publicKey), newUser.getID());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.TEXT_PLAIN);
+            headers.setContentDispositionFormData("secretKey.prv", "secretKey.prv");
+
+
+            return new ResponseEntity<>(Base64.getEncoder().encode(privateKey), headers, HttpStatus.OK);
         }
-
-        byte[] salt = Utils.getRandomBytes(64);
-        String storePassword = Utils.getHash(loginForm.getPassword(),salt);
-
-        Person p = new Person(loginForm.getFirstName(),loginForm.getLastName(),loginForm.getBirthDate(),loginForm.getPersonAddress(),loginForm.getPhoneNumber(),loginForm.getEmail(),loginForm.getUsername(),storePassword);
-        Role role=new Role();
-        role.setID(3L);
-        p.setRole(role);
-
-        Person newUser = personRepository.save(p);
-
-        KeyPair keyPair = Utils.generateKeyPair();
-        byte[] publicKey = keyPair.getPublic().getEncoded();
-        byte[] privateKey = keyPair.getPrivate().getEncoded();
-
-        personRepository.setUserKey(Base64.getEncoder().encodeToString(publicKey), newUser.getID());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        headers.setContentDispositionFormData("secretKey.prv","secretKey.prv");
-
-        ResponseEntity<byte[]> response = new ResponseEntity<>(Base64.getEncoder().encode(privateKey),headers,HttpStatus.OK);
-        return response;
+        catch(Exception e)
+        {
+            return ResponseHandler.buildErrorResponse(e.getMessage(),"A aparut o exceptie in timpul procesului de inregistrare pe serviciul remote!",HttpStatus.UNAUTHORIZED);
+        }
 
     }
 

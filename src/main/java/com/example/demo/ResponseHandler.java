@@ -26,4 +26,12 @@ public class ResponseHandler {
         map.put("status",status.value());
         return new ResponseEntity<Object>(map, status);
     }
+    public static ResponseEntity<Object> buildErrorResponse(String message, String details, HttpStatus status)
+    {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("exception", message);
+        map.put("verbose", details);
+        map.put("status",status.value());
+        return new ResponseEntity<Object>(map, status);
+    }
 }
