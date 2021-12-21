@@ -38,8 +38,8 @@ public class SecurityHandler {
 
         KeyStore ks = KeyStore.getInstance("Windows-MY");
         ks.load(null, null);
-        Certificate cert = ks.getCertificate("springrest");
-        PrivateKey privKey = (PrivateKey) ks.getKey("springrest", ("EchipaDeSoc74").toCharArray());
+        Certificate cert = ks.getCertificate("springboot");
+        PrivateKey privKey = (PrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
 
 //        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
 //        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,);
@@ -60,7 +60,7 @@ public class SecurityHandler {
 //                .sign(algorithm);
 
 
-        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(privKey.getEncoded()), "token",id, HttpStatus.OK);
+        return ResponseHandler.buildTokenResponse(privKey.toString(), "token",id, HttpStatus.OK);
         //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
