@@ -44,27 +44,26 @@ public class SecurityHandler {
         RSAPrivateKey privKey = (RSAPrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
 
 
-        //RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
-//        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
-//        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,);
-//        Date currentDate = new Date();
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(currentDate);
-//        calendar.add(Calendar.HOUR_OF_DAY, 1);
-//        Date expirationDate = calendar.getTime();
-//
-//
-//        String token = JWT.create()
-//                .withIssuer("alphav0.1-rest")
-//                .withSubject(id.toString())
-//                .withIssuedAt(currentDate)
-//                .withClaim("role",role)
-//                .withExpiresAt(expirationDate)
-//                .sign(algorithm);
+        RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
+        Algorithm algorithm = Algorithm.RSA256(rsaPublicKey,privKey);
+        Date currentDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);
+        Date expirationDate = calendar.getTime();
 
 
-        return ResponseHandler.buildTokenResponse(privKey.getEncoded().toString(), "token",id, HttpStatus.OK);
+        String token = JWT.create()
+                .withIssuer("alphav0.1-rest")
+                .withSubject(id.toString())
+                .withIssuedAt(currentDate)
+                .withClaim("role",role)
+                .withExpiresAt(expirationDate)
+                .sign(algorithm);
+
+
+        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(rsaPublicKey.getEncoded()), token,id, HttpStatus.OK);
         //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
