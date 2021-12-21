@@ -57,7 +57,7 @@ public class PersonController {
         }
         catch(Exception e) {
             //return "Nu e buna parola";
-            return ResponseHandler.buildTokenResponse("A aparut o exceptie la generarea token-ului!", null, null, HttpStatus.FORBIDDEN);
+            return ResponseHandler.buildTokenResponse(e.getMessage(), null, null, HttpStatus.FORBIDDEN);
 
         }
     }
