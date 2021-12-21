@@ -41,23 +41,23 @@ public class SecurityHandler {
         Certificate cert = ks.getCertificate("springrest");
         PrivateKey privKey = (PrivateKey) ks.getKey("springrest", ("EchipaDeSoc74").toCharArray());
 
-        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
-        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,);
-        Date currentDate = new Date();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.HOUR_OF_DAY, 1);
-        Date expirationDate = calendar.getTime();
-
-
-        String token = JWT.create()
-                .withIssuer("alphav0.1-rest")
-                .withSubject(id.toString())
-                .withIssuedAt(currentDate)
-                .withClaim("role",role)
-                .withExpiresAt(expirationDate)
-                .sign(algorithm);
+//        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
+//        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,);
+//        Date currentDate = new Date();
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(currentDate);
+//        calendar.add(Calendar.HOUR_OF_DAY, 1);
+//        Date expirationDate = calendar.getTime();
+//
+//
+//        String token = JWT.create()
+//                .withIssuer("alphav0.1-rest")
+//                .withSubject(id.toString())
+//                .withIssuedAt(currentDate)
+//                .withClaim("role",role)
+//                .withExpiresAt(expirationDate)
+//                .sign(algorithm);
 
 
         return ResponseHandler.buildTokenResponse(privKey.toString(), "token",id, HttpStatus.OK);
