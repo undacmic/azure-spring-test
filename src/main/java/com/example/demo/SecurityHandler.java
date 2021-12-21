@@ -39,9 +39,9 @@ public class SecurityHandler {
     {
 
         KeyStore ks = KeyStore.getInstance("PKCS12");
-        ks.load(new FileInputStream("C:\\home\\rest.p12"), ("EchipaDeSoc74").toCharArray());
+        ks.load(new FileInputStream("C:\\home\\springrest.pfx"), ("EchipaDeSoc74").toCharArray());
         //Certificate cert = ks.getCertificate("springboot");
-        PrivateKey privKey = (PrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
+        PrivateKey privKey = (PrivateKey) ks.getKey("springrest", ("EchipaDeSoc74").toCharArray());
 
 
         //RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
