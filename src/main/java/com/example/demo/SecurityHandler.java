@@ -39,31 +39,31 @@ public class SecurityHandler {
     {
 
         KeyStore ks = KeyStore.getInstance("PKCS12");
-        ks.load(new FileInputStream("C:\\home\\springrest.pfx"), ("EchipaDeSoc74").toCharArray());
-        Certificate cert = ks.getCertificate("springboot");
-        RSAPrivateKey privKey = (RSAPrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
+        ks.load(new FileInputStream("C:\\home\\rest.p12"), ("EchipaDeSoc74").toCharArray());
+        //Certificate cert = ks.getCertificate("springboot");
+        PrivateKey privKey = (PrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
 
 
-        RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
-        Algorithm algorithm = Algorithm.RSA256(rsaPublicKey,privKey);
-        Date currentDate = new Date();
+        //RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
+//        Algorithm algorithm = Algorithm.RSA256(rsaPublicKey,privKey);
+//        Date currentDate = new Date();
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(currentDate);
+//        calendar.add(Calendar.HOUR_OF_DAY, 1);
+//        Date expirationDate = calendar.getTime();
+//
+//
+//        String token = JWT.create()
+//                .withIssuer("alphav0.1-rest")
+//                .withSubject(id.toString())
+//                .withIssuedAt(currentDate)
+//                .withClaim("role",role)
+//                .withExpiresAt(expirationDate)
+//                .sign(algorithm);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.HOUR_OF_DAY, 1);
-        Date expirationDate = calendar.getTime();
 
-
-        String token = JWT.create()
-                .withIssuer("alphav0.1-rest")
-                .withSubject(id.toString())
-                .withIssuedAt(currentDate)
-                .withClaim("role",role)
-                .withExpiresAt(expirationDate)
-                .sign(algorithm);
-
-
-        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(rsaPublicKey.getEncoded()), token,id, HttpStatus.OK);
+        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(privKey.getEncoded()), "token",id, HttpStatus.OK);
         //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
