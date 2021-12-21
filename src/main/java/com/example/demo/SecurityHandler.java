@@ -39,31 +39,30 @@ public class SecurityHandler {
     {
 
         KeyStore ks = KeyStore.getInstance("PKCS12");
-        ks.load(new FileInputStream("C:\\home\\springrest.pfx"), ("EchipaDeSoc74").toCharArray());
-        //Certificate cert = ks.getCertificate("springboot");
-        PrivateKey privKey = (PrivateKey) ks.getKey("springrest", ("EchipaDeSoc74").toCharArray());
+        ks.load(new FileInputStream("C:\\home\\site\\wwwroot\\springrest.pfx"), ("EchipaDeSoc74").toCharArray());
+        Certificate cert = ks.getCertificate("springrest");
+        ECPrivateKey ecSigningKey = (ECPrivateKey) ks.getKey("springrest", ("EchipaDeSoc74").toCharArray());
+
+        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
+        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,ecSigningKey);
+        Date currentDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);
+        Date expirationDate = calendar.getTime();
 
 
-        //RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
-//        Algorithm algorithm = Algorithm.RSA256(rsaPublicKey,privKey);
-//        Date currentDate = new Date();
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(currentDate);
-//        calendar.add(Calendar.HOUR_OF_DAY, 1);
-//        Date expirationDate = calendar.getTime();
-//
-//
-//        String token = JWT.create()
-//                .withIssuer("alphav0.1-rest")
-//                .withSubject(id.toString())
-//                .withIssuedAt(currentDate)
-//                .withClaim("role",role)
-//                .withExpiresAt(expirationDate)
-//                .sign(algorithm);
+        String token = JWT.create()
+                .withIssuer("alphav0.1-rest")
+                .withSubject(id.toString())
+                .withIssuedAt(currentDate)
+                .withClaim("role",role)
+                .withExpiresAt(expirationDate)
+                .sign(algorithm);
 
 
-        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(privKey.getEncoded()), "token",id, HttpStatus.OK);
+        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(ecPublicKey.getEncoded()), token,id, HttpStatus.OK);
         //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
