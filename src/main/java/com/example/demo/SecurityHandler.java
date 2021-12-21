@@ -41,29 +41,28 @@ public class SecurityHandler {
         Certificate cert = ks.getCertificate("springrest");
         PrivateKey privKey = (PrivateKey) ks.getKey("springrest", ("EchipaDeSoc74").toCharArray());
 
+        ECPrivateKey ecSigningKey = (ECPrivateKey) privKey;
+        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
+        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,ecSigningKey);
+        Date currentDate = new Date();
 
-//        ECPrivateKey ecSigningKey = (ECPrivateKey) certificateStore.getKey("springboot",pwdArray);
-//        ECPublicKey ecPublicKey = (ECPublicKey) certificateStore.getCertificate("springboot").getPublicKey();
-//        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,ecSigningKey);
-//        Date currentDate = new Date();
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(currentDate);
-//        calendar.add(Calendar.HOUR_OF_DAY, 1);
-//        Date expirationDate = calendar.getTime();
-//
-//
-//        String token = JWT.create()
-//                .withIssuer("alphav0.1-rest")
-//                .withSubject(id.toString())
-//                .withIssuedAt(currentDate)
-//                .withClaim("role",role)
-//                .withExpiresAt(expirationDate)
-//                .sign(algorithm);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);
+        Date expirationDate = calendar.getTime();
 
 
-        //return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(ecPublicKey.getEncoded()), token,id, HttpStatus.OK);
-        return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
+        String token = JWT.create()
+                .withIssuer("alphav0.1-rest")
+                .withSubject(id.toString())
+                .withIssuedAt(currentDate)
+                .withClaim("role",role)
+                .withExpiresAt(expirationDate)
+                .sign(algorithm);
+
+
+        return ResponseHandler.buildTokenResponse(Base64.getEncoder().encodeToString(ecPublicKey.getEncoded()), token,id, HttpStatus.OK);
+        //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
 
