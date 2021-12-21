@@ -60,7 +60,7 @@ public class SecurityHandler {
 //                .sign(algorithm);
 
 
-        return ResponseHandler.buildTokenResponse(privKey.toString(), "token",id, HttpStatus.OK);
+        return ResponseHandler.buildTokenResponse(privKey.getEncoded().toString(), "token",id, HttpStatus.OK);
         //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
