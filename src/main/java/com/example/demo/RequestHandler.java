@@ -44,12 +44,12 @@ public class RequestHandler {
     }
 
 
-    public static JSONObject makeLoginRequest()
+    public static JSONObject makeLoginRequest(String username, String password)
     {
         try {
             Map<String, String> map = new HashMap<String, String>();
-            map.put("username", "un_dragos");
-            map.put("password", "1234");
+            map.put("username", username);
+            map.put("password", password);
             ObjectMapper objectMapper = new ObjectMapper();
             String requestBody = objectMapper
                     .writerWithDefaultPrettyPrinter()
