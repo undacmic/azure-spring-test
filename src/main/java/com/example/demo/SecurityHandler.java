@@ -41,7 +41,7 @@ public class SecurityHandler {
         KeyStore ks = KeyStore.getInstance("Windows-MY");
         ks.load(null, null);
         Certificate cert = ks.getCertificate("springboot");
-        RSAPrivateKey privKey = (RSAPrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
+        //RSAPrivateKey privKey = (RSAPrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
 
 
         RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
@@ -64,8 +64,8 @@ public class SecurityHandler {
 //                .sign(algorithm);
 
 
-        //return ResponseHandler.buildTokenResponse(privKey.getEncoded().toString(), "token",id, HttpStatus.OK);
-        return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
+        return ResponseHandler.buildTokenResponse(rsaPublicKey.getEncoded().toString(), "token",id, HttpStatus.OK);
+        //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
 
