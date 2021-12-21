@@ -38,13 +38,13 @@ public class SecurityHandler {
                 throws Exception
     {
 
-        KeyStore ks = KeyStore.getInstance("Windows-MY");
-        ks.load(null, null);
+        KeyStore ks = KeyStore.getInstance("PKCS12");
+        ks.load(new FileInputStream("C:\\home\\springrest.pfx"), ("EchipaDeSoc74").toCharArray());
         Certificate cert = ks.getCertificate("springboot");
-        //RSAPrivateKey privKey = (RSAPrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
+        RSAPrivateKey privKey = (RSAPrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
 
 
-        RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
+        //RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
 //        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
 //        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,);
 //        Date currentDate = new Date();
@@ -64,7 +64,7 @@ public class SecurityHandler {
 //                .sign(algorithm);
 
 
-        return ResponseHandler.buildTokenResponse(rsaPublicKey.getEncoded().toString(), "token",id, HttpStatus.OK);
+        return ResponseHandler.buildTokenResponse(privKey.getEncoded().toString(), "token",id, HttpStatus.OK);
         //return ResponseHandler.buildTokenResponse("ceva", "token",id, HttpStatus.OK);
 
     }
