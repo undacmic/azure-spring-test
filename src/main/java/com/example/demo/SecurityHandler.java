@@ -20,6 +20,8 @@ import java.security.cert.CertificateException;
 import java.security.interfaces.ECPrivateKey;
 
 import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDate;
@@ -39,8 +41,10 @@ public class SecurityHandler {
         KeyStore ks = KeyStore.getInstance("Windows-MY");
         ks.load(null, null);
         Certificate cert = ks.getCertificate("springboot");
-        PrivateKey privKey = (PrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
+        RSAPrivateKey privKey = (RSAPrivateKey) ks.getKey("springboot", ("EchipaDeSoc74").toCharArray());
 
+
+        RSAPublicKey rsaPublicKey = (RSAPublicKey) cert.getPublicKey();
 //        ECPublicKey ecPublicKey = (ECPublicKey) cert.getPublicKey();
 //        Algorithm algorithm = Algorithm.ECDSA384(ecPublicKey,);
 //        Date currentDate = new Date();
