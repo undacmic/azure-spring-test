@@ -90,8 +90,7 @@ public class PersonController {
             headers.setContentType(MediaType.TEXT_PLAIN);
             headers.setContentDispositionFormData("secretKey.prv", "secretKey.prv");
 
-
-            return new ResponseEntity<>(Base64.getEncoder().encode(privateKey), headers, HttpStatus.OK);
+            return ResponseHandler.buildRegisterResponse(Base64.getEncoder().encodeToString(privateKey),HttpStatus.OK);
         }
         catch(Exception e)
         {

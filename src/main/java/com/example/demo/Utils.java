@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,12 +104,11 @@ public class Utils {
     }
 
 
-    public static boolean verifyServerIdentity(ResponseEntity<Object> tokenResponse) {
+    public static boolean verifyServerIdentity(JSONObject tokenResponse) {
 
         try {
-            Map<String, Object> responseBody = (Map<String, Object>) tokenResponse.getBody();
-            String token = (String) responseBody.get("token");
-            byte[] decoded = Base64.getDecoder().decode( (String) responseBody.get("publicKey"));
+            String token = (String) tokenResponse.get("token");
+            byte[] decoded = Base64.getDecoder().decode( (String) tokenResponse.get("publicKey"));
 
             X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(decoded);
             KeyFactory kf = KeyFactory.getInstance("EC");
@@ -128,13 +128,12 @@ public class Utils {
 
     }
 
-    public static AuthorizeForm signRequestForm(ResponseEntity<Object> tokenResponse, String encodedPrivate)
-            throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException
+    public static AuthorizeForm signRequestForm(JSONObject tokenResponse, String encodedPrivate)
+            throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, JSONException
     {
 
-        Map<String, Object> responseBody = (Map<String, Object>) tokenResponse.getBody();
-        String token = (String) responseBody.get("token");
-        Long userId = (Long) responseBody.get("userId");
+        String token = (String) tokenResponse.get("token");
+        Long userId = (Long) tokenResponse.get("userId");
 
         byte[] privateString = Base64.getDecoder().decode(encodedPrivate);
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
