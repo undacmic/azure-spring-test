@@ -100,14 +100,14 @@ public class SecurityHandler {
             Date currentDate = new Date();
             if(!result || jwt.getExpiresAt().after(currentDate))
             {
-                return ResponseHandler.buildAuthorizationResponse(null,null,HttpStatus.UNAUTHORIZED);
+                return ResponseHandler.buildAuthorizationResponse(null,HttpStatus.UNAUTHORIZED);
             }
 
-            return ResponseHandler.buildAuthorizationResponse(claims.get("role").asString(),jwt.getSubject(),HttpStatus.OK);
+            return ResponseHandler.buildAuthorizationResponse(claims.get("role").asString(),HttpStatus.OK);
 
         }
         catch(JWTVerificationException exception) {
-            return ResponseHandler.buildAuthorizationResponse(null,null,HttpStatus.UNAUTHORIZED);
+            return ResponseHandler.buildAuthorizationResponse(null,HttpStatus.UNAUTHORIZED);
         }
     }
 

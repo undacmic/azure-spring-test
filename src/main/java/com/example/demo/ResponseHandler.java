@@ -18,11 +18,10 @@ public class ResponseHandler {
 
         return new ResponseEntity<Object>(map, status);
     }
-    public static ResponseEntity<Object> buildAuthorizationResponse(String role, String id, HttpStatus status)
+    public static ResponseEntity<Object> buildAuthorizationResponse(String role, HttpStatus status)
     {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("userRole", role);
-        map.put("userId", id);
         map.put("status",status.value());
         return new ResponseEntity<Object>(map, status);
     }

@@ -6,20 +6,24 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.*;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 
 public class Utils {
@@ -99,9 +103,29 @@ public class Utils {
     }
 
 
-    public static boolean verifyServerIdentity() {
+    public static boolean verifyServerIdentity(ResponseEntity<Object> tokenResponse) {
 
-        return false;
+        try {
+            Map<String, Object> responseBody = (Map<String, Object>) tokenResponse.getBody();
+            String token = (String) responseBody.get("token");
+            byte[] decoded = Base64.getDecoder().decode( (String) responseBody.get("publicKey"));
+
+            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(decoded);
+            KeyFactory kf = KeyFactory.getInstance("EC");
+
+            ECPublicKey serverPublicKey = (ECPublicKey) kf.generatePublic(X509publicKey);
+
+            Algorithm algorithm = Algorithm.ECDSA384(serverPublicKey, null);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer("alphav0.1-rest")
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
+            return true;
+        }
+        catch(Exception e) {
+            return false;
+        }
+
     }
 
     public static AuthorizeForm signRequestForm(ResponseEntity<Object> tokenResponse, String encodedPrivate)
@@ -128,6 +152,59 @@ public class Utils {
         return authorizeForm;
     }
 
+    public static JSONObject makeGenericRequest(String url, Map<String,Object> params, int type)
+    {
+        try {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestBody = "";
+            if(params != null) {
+                requestBody = objectMapper
+                        .writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(params);
+            }
+
+            HttpRequest request = null;
+            switch (type)
+            {
+                case 0: // GET METHOD
+                    request = HttpRequest.newBuilder(URI.create(url))
+                            .header("Content-Type","application/json")
+                            .GET()
+                            .build();
+                    break;
+                case 1: // POST METHOD
+                    request = HttpRequest.newBuilder(URI.create(url))
+                            .header("Content-Type","application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                            .build();
+                    break;
+                case 2: // PUT METHOD
+                    request = HttpRequest.newBuilder(URI.create(url))
+                            .header("Content-Type","application/json")
+                            .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                            .build();
+                    break;
+                case 3: //DELETE METHOD
+                    request = HttpRequest.newBuilder(URI.create(url))
+                            .header("Content-Type", "application/json")
+                            .DELETE()
+                            .build();
+                    break;
+            }
+
+            HttpResponse<String> response =  HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            return new JSONObject(response.body());
+
+        }
+        catch(Exception e)
+        {
+            Map<String, Object> map = new HashMap<>();
+            map.put("message",e.getMessage());
+            map.put("status", HttpStatus.UNAUTHORIZED.toString());
+            return new JSONObject(map);
+        }
+    }
 
 
 
