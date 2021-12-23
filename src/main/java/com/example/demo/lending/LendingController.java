@@ -14,14 +14,6 @@ public class LendingController {
 
     @GetMapping("/")
     public Iterable<Lending> getLendings() {
-        String userIDs = "";
-        //Iterable<Lending> queryResult = lendingRepository.findAll();
-        //Iterator<Lending> iterator = queryResult.iterator();
-        //while(iterator.hasNext()) {
-            //userIDs += iterator.next().getPerson().getID() +":" +iterator.next().getBookObject().getID() +".";
-            //System.out.print(userIDs);
-        //}
-        //List<Lending> result = lendingRepository.findAll().stream().toList();
         return lendingRepository.findAll();
     }
 

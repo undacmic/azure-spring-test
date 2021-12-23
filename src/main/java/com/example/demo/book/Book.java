@@ -1,5 +1,6 @@
 package com.example.demo.book;
 
+import com.example.demo.bookRequests.BookRequest;
 import com.fasterxml.jackson.annotation.*;
 import com.example.demo.lending.Lending;
 
@@ -60,6 +61,11 @@ public class Book {
                 fetch = FetchType.LAZY)
     @JsonBackReference
     private Set<Lending> lendings = new HashSet<Lending>();
+
+    @OneToMany(mappedBy = "bookObject",
+            fetch = FetchType.LAZY)
+    @JsonBackReference
+    private Set<BookRequest> requests = new HashSet<BookRequest>();
 
     public Long getID() {
         return ID;
@@ -140,6 +146,14 @@ public class Book {
 
     public void setLendings(Set<Lending> lendings) {
         this.lendings = lendings;
+    }
+
+    public Set<BookRequest> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(Set<BookRequest> requests) {
+        this.requests = requests;
     }
 
     @Override
