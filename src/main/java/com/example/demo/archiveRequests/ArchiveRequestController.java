@@ -60,7 +60,7 @@ public class ArchiveRequestController {
                     Archive newArchive = new Archive();
                     newArchive.setPerson(requestingUser.get());
                     newArchive.setReadAccess(archiveForm.getReadAccess());
-                    newArchive.setExpirationDate(LocalDate.now().plusDays(14));
+                    newArchive.setExpirationDate(archiveForm.getExpirationDate());
                     oldRequest.setArchive(newArchive);
                     archiveRequestRepository.save(oldRequest);
                     archiveRepository.save(newArchive);
