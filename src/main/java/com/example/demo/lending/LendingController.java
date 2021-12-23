@@ -1,8 +1,7 @@
 package com.example.demo.lending;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.person.Person;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/lendings")
@@ -15,6 +14,12 @@ public class LendingController {
     @GetMapping("/")
     public Iterable<Lending> getLendings() {
         return lendingRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Iterable<Lending> updateUser(@PathVariable("id") Long id)
+    {
+        return lendingRepository.getBorrowedBooks(id);
     }
 
 }
