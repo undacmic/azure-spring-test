@@ -2,6 +2,7 @@ package com.example.demo.archiveRequests;
 
 import com.example.demo.archive.Archive;
 import com.example.demo.person.Person;
+import com.example.demo.shelf.Shelf;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -74,5 +75,15 @@ public class ArchiveRequest {
 
     public void setRequestTimestamp(LocalDate requestTimestamp) {
         this.requestTimestamp = requestTimestamp;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if(this == o){
+            return true;
+        }
+        if(!(o instanceof ArchiveRequest)) {
+            return false;
+        }
+        return ID != null && ID.equals(((ArchiveRequest)o).ID);
     }
 }

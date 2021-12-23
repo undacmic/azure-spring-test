@@ -2,6 +2,7 @@ package com.example.demo.archive;
 
 import com.example.demo.person.Person;
 import com.example.demo.role.Role;
+import com.example.demo.shelf.Shelf;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -51,5 +52,16 @@ public class Archive {
 
     public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o){
+            return true;
+        }
+        if(!(o instanceof Archive)) {
+            return false;
+        }
+        return ID != null && ID.equals(((Archive)o).ID);
     }
 }
