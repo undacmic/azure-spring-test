@@ -45,7 +45,11 @@ public class VirtualBookBoughtController {
     {
 
         Optional<VirtualBook> boughtBook = virtualBookRepository.findById(buyForm.getIdVirtualBook());
-
+        VirtualBookBought alreadyBought = virtualBookBoughtRepository.getByISBN(buyForm.getIsbn());
+        if(alreadyBought != null)
+        {
+            return ResponseHandler.buildBorrowRequest("Cartea a fost deja cumparata!", HttpStatus.FOUND);
+        }
         try {
             if (boughtBook.isPresent()) {
 
