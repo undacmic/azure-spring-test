@@ -1,6 +1,8 @@
 package com.example.demo.book;
 
 import com.example.demo.bookRequests.BookRequest;
+import com.example.demo.role.Role;
+import com.example.demo.shelf.Shelf;
 import com.fasterxml.jackson.annotation.*;
 import com.example.demo.lending.Lending;
 
@@ -24,7 +26,6 @@ public class Book {
                 String genre,
                 int numberOfPages,
                 String bookStatus,
-                int shelfID,
                 int nrBooks)
     {
         this.isbn=isbn;
@@ -33,7 +34,6 @@ public class Book {
         this.genre=genre;
         this.numberOfPages=numberOfPages;
         this.bookStatus=bookStatus;
-        this.shelfID=shelfID;
         this.nrBooks=nrBooks;
     }
 
@@ -53,7 +53,9 @@ public class Book {
 
     private String bookStatus;
 
-    private int shelfID;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "shelfID")
+    private Shelf shelf;
 
     private int nrBooks;
 
@@ -120,12 +122,12 @@ public class Book {
         this.genre = genre;
     }
 
-    public int getShelfID() {
-        return shelfID;
+    public Shelf getShelf() {
+        return shelf;
     }
 
-    public void setShelfID(int shelfID) {
-        this.shelfID = shelfID;
+    public void setShelf(Shelf shelf) {
+        this.shelf = shelf;
     }
 
     public void setIsbn(String isbn) {
