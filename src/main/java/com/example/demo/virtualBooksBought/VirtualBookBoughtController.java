@@ -3,6 +3,7 @@ package com.example.demo.virtualBooksBought;
 import com.example.demo.BuyForm;
 import com.example.demo.ResponseHandler;
 import com.example.demo.Utils;
+import com.example.demo.lending.Lending;
 import com.example.demo.person.Person;
 import com.example.demo.person.PersonRepository;
 import com.example.demo.virtualBook.VirtualBook;
@@ -32,6 +33,12 @@ public class VirtualBookBoughtController {
 
     @GetMapping("/")
     public Iterable<VirtualBookBought> getVirtualBought() { return virtualBookBoughtRepository.findAll(); }
+
+    @GetMapping("/{id}")
+    public Iterable<VirtualBookBought> updateUser(@PathVariable("id") Long id)
+    {
+        return virtualBookBoughtRepository.getBoughtBooks(id);
+    }
 
     @PostMapping("/buy")
     public ResponseEntity<Object> buy(@RequestBody BuyForm buyForm)
