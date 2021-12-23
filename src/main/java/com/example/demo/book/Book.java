@@ -24,7 +24,8 @@ public class Book {
                 int numberOfPages,
                 String bookStatus,
                 int shelfID,
-                int nrBooks)
+                int nrBooks,
+                int sectionID)
     {
         this.isbn=isbn;
         this.title=title;
@@ -34,6 +35,7 @@ public class Book {
         this.bookStatus=bookStatus;
         this.shelfID=shelfID;
         this.nrBooks=nrBooks;
+        this.sectionID=sectionID;
     }
 
     @Id
@@ -53,6 +55,8 @@ public class Book {
     private String bookStatus;
 
     private int shelfID;
+
+    private int sectionID;
 
     private int nrBooks;
 
@@ -124,6 +128,14 @@ public class Book {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+    }
+
+    public int getSectionID() {
+        return sectionID;
+    }
+
+    public void setSectionID(int sectionID) {
+        this.sectionID = sectionID;
     }
 
     public String getAuthor() {
