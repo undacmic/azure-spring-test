@@ -75,7 +75,7 @@ public class PersonController {
 
             Person p = new Person(loginForm.getFirstName(), loginForm.getLastName(), loginForm.getBirthDate(), loginForm.getPersonAddress(), loginForm.getPhoneNumber(), loginForm.getEmail(), loginForm.getUsername(), storePassword);
             Role role = new Role();
-            role.setID(3L);
+            role.setID(loginForm.getRole());
             p.setRole(role);
 
             Person newUser = personRepository.save(p);

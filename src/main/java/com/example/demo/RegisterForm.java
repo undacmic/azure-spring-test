@@ -12,7 +12,8 @@ public class RegisterForm {
                  LocalDate birthDate,
                  String personAddress,
                  String phoneNumber,
-                 String email) {
+                 String email,
+                 Long role) {
         this.username=username;
         this.password=password;
         this.firstName=firstName;
@@ -21,6 +22,7 @@ public class RegisterForm {
         this.personAddress=personAddress;
         this.phoneNumber=phoneNumber;
         this.email=email;
+        this.role=role;
     }
 
     private String username;
@@ -31,6 +33,7 @@ public class RegisterForm {
     private String personAddress;
     private String phoneNumber;
     private String email;
+    private Long role;
 
     public String getUsername() {
         return username;
@@ -94,5 +97,13 @@ public class RegisterForm {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getRole() {
+        return role;
+    }
+
+    public void setRole(Long role) {
+        this.role = role;
     }
 }
