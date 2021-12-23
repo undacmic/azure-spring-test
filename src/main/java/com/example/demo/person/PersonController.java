@@ -34,6 +34,9 @@ public class PersonController {
     @GetMapping("/")
     public Iterable<Person> getUsers() { return personRepository.findAll(); }
 
+    @GetMapping("/{username}")
+    public Person getUser(@PathVariable("username") String username) { return personRepository.getByCredentials(username); }
+
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginForm loginForm)
     {
