@@ -152,7 +152,9 @@ public class PersonController {
         user.setPersonAddress(personForm.getPersonAddress());
         user.setPhoneNumber(personForm.getPhoneNumber());
         user.setEmail(personForm.getEmail());
-        user.setPersonPassword(personForm.getPassword());
+        if(!personForm.getPassword().isEmpty()){
+            user.setPersonPassword(personForm.getPassword());
+        }
 
         personRepository.save(user);
 
