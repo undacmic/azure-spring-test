@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.yaml.snakeyaml.events.Event;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface BookRequestRepository extends JpaRepository<BookRequest, Long> {
 
@@ -14,4 +15,7 @@ public interface BookRequestRepository extends JpaRepository<BookRequest, Long> 
 
     @Query("DELETE FROM BookRequest b where b.person.id=:id")
     void deleteAssociatedBookRequests(Long id);
+
+    @Query("SELECT r FROM BookRequest r WHERE r.requestStatus=:status")
+    List<BookRequest> selectUnapprovedRequest(String status);
 }

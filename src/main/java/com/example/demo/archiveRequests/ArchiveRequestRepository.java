@@ -19,4 +19,7 @@ public interface ArchiveRequestRepository extends JpaRepository<ArchiveRequest, 
     @Transactional
     void deleteAssociatedArchiveRequests(Long id);
 
+    @Query("SELECT r FROM ArchiveRequest r WHERE r.requestStatus=:status")
+    List<ArchiveRequest> selectUnapprovedRequest(String status);
+
 }
