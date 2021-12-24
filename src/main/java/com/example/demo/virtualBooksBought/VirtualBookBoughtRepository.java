@@ -13,4 +13,5 @@ public interface VirtualBookBoughtRepository extends JpaRepository<VirtualBookBo
 
     @Query("SELECT v FROM VirtualBookBought v WHERE v.isbn=:isbn")
     VirtualBookBought getByISBN(String isbn);
+
 }

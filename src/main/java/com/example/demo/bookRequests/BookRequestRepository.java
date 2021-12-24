@@ -11,4 +11,7 @@ public interface BookRequestRepository extends JpaRepository<BookRequest, Long> 
 
     @Query("SELECT r FROM BookRequest r WHERE r.person.ID=:userId AND r.bookObject.ID=:bookId AND r.requestType=:type")
     BookRequest selectRequest(Long userId, Long bookId, String type);
+
+    @Query("DELETE FROM BookRequest b where b.person.id=:id")
+    void deleteAssociatedBookRequests(Long id);
 }

@@ -1,5 +1,7 @@
 package com.example.demo.person;
+import com.example.demo.archiveRequests.ArchiveRequest;
 import com.example.demo.bookRequests.BookRequest;
+import com.example.demo.virtualBooksBought.VirtualBookBought;
 import com.fasterxml.jackson.annotation.*;
 import com.example.demo.lending.Lending;
 import com.example.demo.role.Role;
@@ -75,14 +77,28 @@ public class Person {
     private String publicKey;
 
     @OneToMany(mappedBy = "person",
-            fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Set<Lending> lendings = new HashSet<Lending>();
 
     @OneToMany(mappedBy = "person",
-            fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Set<BookRequest> requests = new HashSet<BookRequest>();
+
+    @OneToMany(mappedBy = "person",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    private Set<VirtualBookBought> virtualBookBought = new HashSet<VirtualBookBought>();
+
+    @OneToMany(mappedBy = "person",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    private Set<ArchiveRequest> archiveRequests = new HashSet<ArchiveRequest>();
 
     public Long getID() {
         return ID;

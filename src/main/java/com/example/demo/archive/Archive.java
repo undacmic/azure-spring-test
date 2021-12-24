@@ -3,6 +3,8 @@ package com.example.demo.archive;
 import com.example.demo.person.Person;
 import com.example.demo.role.Role;
 import com.example.demo.shelf.Shelf;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;

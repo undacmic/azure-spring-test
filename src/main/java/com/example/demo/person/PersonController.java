@@ -1,6 +1,8 @@
 package com.example.demo.person;
 
 import com.example.demo.*;
+import com.example.demo.archive.ArchiveRepository;
+import com.example.demo.archiveRequests.ArchiveRequestRepository;
 import com.example.demo.role.Role;
 import com.google.gson.*;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +24,7 @@ import java.util.Base64;
 public class PersonController {
 
     private final PersonRepository personRepository;
+    private final ArchiveRepository archiveRepository;
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
         @Override
         public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -29,7 +32,8 @@ public class PersonController {
         }
     }).create();
 
-    public PersonController(PersonRepository personRepository) { this.personRepository = personRepository;}
+    public PersonController(PersonRepository personRepository,
+                            ArchiveRepository archiveRepository) { this.personRepository = personRepository; this.archiveRepository = archiveRepository; }
 
     @GetMapping("/")
     public Iterable<Person> getUsers() { return personRepository.findAll(); }
@@ -129,6 +133,7 @@ public class PersonController {
         // String role = Utils.verifyToken(authorizeForm);
         //if(role.equals("admin") || role.equals("librarian"))
         //{
+        archiveRepository.deleteAssociatedArchives(id);
         personRepository.deleteById(id);
         return ResponseHandler.buildBorrowRequest("Utilizatorul a fost sters!",HttpStatus.OK);
         //}

@@ -3,6 +3,9 @@ package com.example.demo.archiveRequests;
 import com.example.demo.archive.Archive;
 import com.example.demo.person.Person;
 import com.example.demo.shelf.Shelf;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,8 +18,12 @@ public class ArchiveRequest {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long ID;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idUser")
+    @JsonManagedReference
+    //@JsonIdentityInfo(
+    //generator = ObjectIdGenerators.PropertyGenerator.class,
+    //property = "id")
     private Person person;
 
     @OneToOne(fetch = FetchType.EAGER)

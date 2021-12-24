@@ -2,6 +2,7 @@ package com.example.demo.virtualBooksBought;
 
 import com.example.demo.person.Person;
 import com.example.demo.virtualBook.VirtualBook;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 
@@ -26,8 +27,9 @@ public class VirtualBookBought {
 
     private String accessKey;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userID")
+    @JsonManagedReference
     private Person person;
 
     public Long getID() {
