@@ -134,7 +134,7 @@ public class PersonController {
     }
 
     @PutMapping("/update/{id}")
-    public void updateUser(Person personForm, @PathVariable("id") Long id) //Request param for authorization
+    public ResponseEntity<Object> updateUser(RegisterForm personForm, @PathVariable("id") Long id) //Request param for authorization
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         //request.getAuthorizeForm().setEncodedPublic(personRepository.getPublicKey(request.getAuthorizeForm().getUserId()));
@@ -152,9 +152,11 @@ public class PersonController {
         user.setPersonAddress(personForm.getPersonAddress());
         user.setPhoneNumber(personForm.getPhoneNumber());
         user.setEmail(personForm.getEmail());
-        user.setPersonPassword(personForm.getPersonPassword());
+        user.setPersonPassword(personForm.getPassword());
 
         personRepository.save(user);
+
+        return ResponseHandler.buildBorrowRequest(personForm.getUsername(),HttpStatus.OK);
 
         //}
 
