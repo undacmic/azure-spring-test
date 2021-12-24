@@ -122,7 +122,7 @@ public class PersonController {
 
 
     @DeleteMapping("/delete/{id}")
-    public void deleteUser(@PathVariable("id") Long id) //@RequestBody AuthorizeForm authorizeForm - authorization parameter
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) //@RequestBody AuthorizeForm authorizeForm - authorization parameter
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         // authorizeForm.setEncodedPublic(personRepository.getPublicKey(authorizeForm.getUserId()));
@@ -130,6 +130,7 @@ public class PersonController {
         //if(role.equals("admin") || role.equals("librarian"))
         //{
         personRepository.deleteById(id);
+        return ResponseHandler.buildBorrowRequest("Utilizatorul a fost sters!",HttpStatus.OK);
         //}
     }
 
