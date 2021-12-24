@@ -15,7 +15,7 @@ public interface ArchiveRequestRepository extends JpaRepository<ArchiveRequest, 
     ArchiveRequest getArchiveRequest(Long userId);
 
     @Modifying
-    @Query("DELETE FROM ArchiveRequest r where r.idArchive=:id")
+    @Query("DELETE FROM ArchiveRequest r where r.archive.id=:id")
     @Transactional
     void deleteAssociatedArchiveRequests(Long id);
 
