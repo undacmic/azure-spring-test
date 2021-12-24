@@ -1,10 +1,7 @@
 package com.example.demo.bookRequests;
 
 
-import com.example.demo.RegisterForm;
-import com.example.demo.RequestForm;
-import com.example.demo.ResponseHandler;
-import com.example.demo.UnsolvedRequest;
+import com.example.demo.*;
 import com.example.demo.archiveRequests.ArchiveRequest;
 import com.example.demo.archiveRequests.ArchiveRequestRepository;
 import com.example.demo.book.Book;
@@ -73,7 +70,7 @@ public class BookRequestController {
         }
         catch(Exception e)
         {
-            return null;
+            return listReqs;
         }
 
     }
@@ -120,6 +117,26 @@ public class BookRequestController {
         {
             return ResponseHandler.buildErrorResponse("An error has been detected during the borrowing process!",e.getMessage(),HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Object> changeStatus(@PathVariable("id") Long id, @RequestBody StatusForm statusForm)
+    {
+
+        if(statusForm.getType().equals("add"))
+        {
+            ArchiveRequest r = archiveRequestRepository.getById(id);
+            r.setRequestStatus(statusForm.getStatus());
+            archiveRequestRepository.save(r);
+        }
+        else
+        {
+            BookRequest r1 = bookRequestRepository.getById(id);
+            r1.setRequestStatus(statusForm.getStatus());
+            bookRequestRepository.save(r1);
+        }
+        return ResponseHandler.buildBorrowRequest("Statusul request-ului a fost modificat cu succes!",HttpStatus.OK);
+
     }
 
 }
