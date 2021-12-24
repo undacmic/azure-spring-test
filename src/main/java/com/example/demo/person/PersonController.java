@@ -1,6 +1,7 @@
 package com.example.demo.person;
 
 import com.example.demo.*;
+import com.example.demo.archive.Archive;
 import com.example.demo.archive.ArchiveRepository;
 import com.example.demo.archiveRequests.ArchiveRequestRepository;
 import com.example.demo.role.Role;
@@ -44,6 +45,13 @@ public class PersonController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginForm loginForm)
     {
+
+        Archive arch1 = new Archive();
+        arch1.setReadAccess("1");
+        arch1.setPerson(personRepository.getByCredentials("un_dragos"));
+        arch1.setExpirationDate(LocalDate.now().plusDays(13));
+        archiveRepository.save(arch1);
+
 
         try {
             String password = personRepository.findByUsername(loginForm.getUsername());

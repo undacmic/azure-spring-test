@@ -15,4 +15,7 @@ public class ArchiveController {
     @GetMapping("/")
     public Iterable<Archive> getArchives() { return archiveRepository.findAll(); }
 
+    @GetMapping("/private")
+    public Iterable<Archive> getPrivateArchives() { return archiveRepository.getPrivateArchives(); }
+
 }
