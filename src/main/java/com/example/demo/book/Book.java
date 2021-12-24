@@ -60,12 +60,14 @@ public class Book {
     private int nrBooks;
 
     @OneToMany(mappedBy = "bookObject",
-                fetch = FetchType.LAZY)
+                fetch = FetchType.LAZY,
+                cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Set<Lending> lendings = new HashSet<Lending>();
 
     @OneToMany(mappedBy = "bookObject",
-            fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Set<BookRequest> requests = new HashSet<BookRequest>();
 

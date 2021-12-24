@@ -1,7 +1,14 @@
 package com.example.demo.book;
 
+import com.example.demo.BookForm;
+import com.example.demo.ResponseHandler;
+import com.example.demo.section.Section;
+import com.example.demo.section.SectionRepository;
+import com.example.demo.shelf.Shelf;
+import com.example.demo.shelf.ShelfRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,9 +16,15 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookRepository bookRepository;
+    private final SectionRepository sectionRepository;
+    private final ShelfRepository shelfRepository;
 
-    public BookController(BookRepository bookRepository) {
+    public BookController(BookRepository bookRepository,
+                          SectionRepository sectionRepository,
+                          ShelfRepository shelfRepository) {
         this.bookRepository = bookRepository;
+        this.sectionRepository = sectionRepository;
+        this.shelfRepository = shelfRepository;
     }
 
     @PostMapping("/")
@@ -48,6 +61,49 @@ public class BookController {
             default:
                 return bookRepository.findAll();
         }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteBook(@PathVariable("id") Long id)
+    {
+        bookRepository.deleteById(id);
+        return ResponseHandler.buildBorrowRequest("Utilizatorul a fost sters!",HttpStatus.OK);
+    }
+    @PutMapping("update/{id}")
+    public ResponseEntity<Object> updateBook(@PathVariable("id") Long id, @RequestBody BookForm bookForm)
+    {
+        Book b = bookRepository.getById(id);
+        b.setIsbn(bookForm.getIsbn());
+        b.setBookStatus(bookForm.getStatus());
+        b.setAuthor(bookForm.getAuthor());
+        b.setGenre(bookForm.getGenre());
+        b.setNrBooks(bookForm.getNumberOfBooks());
+        b.setNumberOfPages(bookForm.getNumberOfPages());
+        b.setTitle(bookForm.getTitle());
+
+        Shelf wantedShelf = shelfRepository.getById(bookForm.getShelfID());
+        b.setShelf(wantedShelf);
+        bookRepository.save(b);
+
+        return ResponseHandler.buildBorrowRequest(bookForm.getIsbn(),HttpStatus.OK);
+    }
+    @PostMapping("/add")
+    public ResponseEntity<Object> addBook(@RequestBody BookForm bookForm)
+    {
+        Book b = new Book();
+        b.setIsbn(bookForm.getIsbn());
+        b.setBookStatus(bookForm.getStatus());
+        b.setAuthor(bookForm.getAuthor());
+        b.setGenre(bookForm.getGenre());
+        b.setNrBooks(bookForm.getNumberOfBooks());
+        b.setNumberOfPages(bookForm.getNumberOfPages());
+        b.setTitle(bookForm.getTitle());
+
+        Shelf wantedShelf = shelfRepository.getById(bookForm.getShelfID());
+        b.setShelf(wantedShelf);
+        bookRepository.save(b);
+
+        return ResponseHandler.buildBorrowRequest("Cartea a fost adaugata cu succes!",HttpStatus.OK);
     }
 
 
