@@ -67,7 +67,7 @@ public class BookController {
     public ResponseEntity<Object> deleteBook(@PathVariable("id") Long id)
     {
         bookRepository.deleteById(id);
-        return ResponseHandler.buildBorrowRequest("Utilizatorul a fost sters!",HttpStatus.OK);
+        return ResponseHandler.buildBorrowRequest("Cartea a fost stearsa!",HttpStatus.OK);
     }
     @PutMapping("update/{id}")
     public ResponseEntity<Object> updateBook(@PathVariable("id") Long id, @RequestBody BookForm bookForm)
