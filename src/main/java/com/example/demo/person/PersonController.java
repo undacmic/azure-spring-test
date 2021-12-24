@@ -46,11 +46,6 @@ public class PersonController {
     public ResponseEntity<Object> login(@RequestBody LoginForm loginForm)
     {
 
-        Archive arch1 = new Archive();
-        arch1.setReadAccess("1");
-        arch1.setPerson(personRepository.getByCredentials("un_dragos"));
-        arch1.setExpirationDate(LocalDate.now().plusDays(13));
-        archiveRepository.save(arch1);
 
 
         try {
